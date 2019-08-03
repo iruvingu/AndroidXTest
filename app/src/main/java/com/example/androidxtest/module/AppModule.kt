@@ -13,7 +13,7 @@ val appModule = module {
     // single Instance of HelloRepo
     single<HelloRepo> { HelloRepoImpl() }
 
-    factory<MessagesRepo> { MessagesRepoImpl() }
+    factory { MessagesRepoImpl() }
 
     viewModel { MainActivityViewModel(get(), get()) }
 

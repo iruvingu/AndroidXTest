@@ -1,24 +1,36 @@
 package com.example.androidxtest.repository
 
 import android.util.Log
+import com.example.androidxtest.model.Message
 import com.google.firebase.firestore.FirebaseFirestore
 
 interface MessagesRepo {
-    fun getMessage()
+    fun getMessage(messagesList: MutableList<Message>)
 }
 
-class MessagesRepoImpl(): MessagesRepo {
+class MessagesRepoImpl {
 
     private val firestoreDB = FirebaseFirestore.getInstance()
 
-    override fun getMessage() {
-        firestoreDB.collection("mensajes").get().addOnSuccessListener { result ->
-            result.forEach {
-                Log.d("MSG", "${it.id} => ${it.data}")
+     fun getMessage(messagesRepo: MessagesRepo) {
+        val listOfMessages: MutableList<Message> = mutableListOf()
+        try {
+
+            firestoreDB.collection("mensajes").get().addOnSuccessListener { result ->
+                result.forEach {
+                    Log.d("MSG", "${it.id} => ${it.data}")
+                    listOfMessages.add(it.toObject(Message::class.java))
+                }
+                messagesRepo.getMessage(listOfMessages)
+            }.addOnFailureListener { exception ->
+                Log.w("Error", "Error getting documents.", exception as Throwable?)
+                listOfMessages.clear()
             }
-        }.addOnFailureListener { exception ->
-            Log.w("Error", "Error getting documents.", exception)
+        } catch (e: Exception){
+            Log.w("Error", "Exception: ", e)
+            listOfMessages.clear()
         }
+
     }
 
 }
