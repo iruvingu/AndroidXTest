@@ -14,6 +14,6 @@ val appModule = module {
 
     factory<MessageRepoByCoroutines> { MessageRepoByCoroutinesImpl() }
 
-    viewModel { MainActivityViewModel(get(), get(), get()) }
+    viewModel { MainActivityViewModel(get(), get(), messageRepoByCoroutines = get()) }
 
 }
